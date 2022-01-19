@@ -9,6 +9,9 @@ Ref: https://www.w3schools.in/python-tutorial/metaprogramming/
 import logging; logging.basicConfig(level=logging.INFO)
 import time
 import pandas as pd
+from tabulate import tabulate
+import matplotlib.pyplot as plt
+
 
 
 #############################################################
@@ -70,22 +73,39 @@ def printer(msg):
 list1 = [1, 2, 3, 4]
 list2 = ['A', 'B', 'C', 'D']
 
+# Define Decorator that writes dataframe to file
 def write2file(funct):
+    # Define inner function that takes any input
     def inner(*args):
+        # Call Funct to create dataframe
+        logging.info('Function called')
         df = funct(*args)
         df.to_excel('test.xlsx')
         print('Df written to excel')
+        # Return that object that has been created
+        return df
+    # Return the inner function waiting to be executed
     return inner
 
+# Define Second Decorator - Show DataFrame
+def tabulate_df(funct):
+    def inner(*args):
+        logging.info('Function called')
+        df = funct(*args)
+        print(tabulate(df, headers = 'keys', tablefmt = 'psql')) 
+        return df
+    return inner
+
+# Decorate Our Function
 @write2file
+@tabulate_df
 def create_df(list1, list2):
     df = pd.DataFrame({'Int':list1, 'String':list2})
-    print(df)
     return df
 
-create_df(list1, list2)
-
-
+plt.plot([1,2,3,4])
+plt.show()
+plt.savefig('test.jpeg')
 
 
 
